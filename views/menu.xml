@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <menuitem
+            id="hospital_menu_root"
+            name="Hospital Management"
+            web_icon="hospital_management,custom_addons/hospital_mangementstatic/description/icon.png"
+            sequence="0" />
+
+        <menuitem
+            id="patient_details_menu"
+            name="Patients details"
+            parent="hospital_menu_root"
+            sequence="0"
+        />
+
+        <menuitem
+            id="patient_menu"
+            name="Patients"
+            parent="patient_details_menu"
+            action="hospital_patient_action"
+            sequence="0" />
+
+        <menuitem
+            id="kids_patient_menu"
+            name="Kids Patients"
+            parent="patient_details_menu"
+            action="hospital_kids_patient_action"
+            sequence="1" />
+
+        <menuitem
+            id="appointment_main_menu"
+            name="Appointments"
+            parent="hospital_menu_root"
+            sequence="1"
+        />
+
+        <menuitem
+            id="appointment_menu"
+            name="Appointments List"
+            parent="appointment_main_menu"
+            action="hospital_appointment_action"
+            sequence="0"
+        />
+
+        <menuitem
+            id="prescription_menu"
+            name="Prescriptions"
+            parent="appointment_main_menu"
+            action="action_patient_prescription"
+            sequence="1"
+        />
+
+    </data>
+</odoo>

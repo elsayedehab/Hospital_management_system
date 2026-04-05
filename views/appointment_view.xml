@@ -1,0 +1,68 @@
+<odoo>
+    <data>
+        <record id="hospital_appointment_tree_view" model="ir.ui.view">
+            <field name="name">hospital.appointment.tree</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <tree string="All Appointments">
+                    <field name="appointment_serial" readonly="1" />
+                    <field name="patient_id" />
+                    <field name="appointment_time" />
+                    <field name="booking_time" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="hospital_appointment_view_form" model="ir.ui.view">
+            <field name="name">hospital.appointment.form</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="appointment_serial" readonly="1" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Patient Information">
+                                <field name="patient_id" />
+                                <field name="age" />
+                                <field name="gender" />
+                            </group>
+                            <group string="Date Information">
+                                <field name="appointment_time" />
+                                <field name="booking_time" />
+                            </group>
+                        </group>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hospital_appointment_search" model="ir.ui.view">
+            <field name="name">hospital.appointment.search</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="appointment_serial" />
+                    <field name="patient_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="hospital_appointment_action" model="ir.actions.act_window">
+            <field name="name">Appointments</field>
+            <field name="res_model">hospital.appointment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>
