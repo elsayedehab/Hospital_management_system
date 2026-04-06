@@ -1,0 +1,84 @@
+<templates xml:space="preserve">
+    <t t-name="Hospital_mangement.PatientCard">
+        <div class="o_patient_dashboard p-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary fw-bold">Patient Dashboard</h2>
+                
+                <button t-attf-class="btn #{state.isInputVisible ? 'btn-secondary' : 'btn-primary'} shadow-sm" 
+                        t-on-click="toggleInputForm">
+                    <i t-attf-class="fa #{state.isInputVisible ? 'fa-times' : 'fa-plus-circle'} me-2"/>
+                    <t t-esc="state.isInputVisible ? 'Cancel' : 'Add New Patient'"/>
+                </button>
+            </div>
+
+            <t t-if="state.isInputVisible">
+                <div class="card p-4 mb-5 shadow-sm border-0 bg-white" style="border-radius: 15px;">
+                    <h4 class="mb-3 text-dark fw-bold"><i class="fa fa-user-plus me-2 text-primary"/>New Patient Entry</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="small fw-bold text-muted">Patient Name</label>
+                            <input type="text" class="form-control mt-1" t-ref="nameInput" placeholder="Enter Name..."/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">Date of Birth</label>
+                            <input type="date" class="form-control mt-1" t-ref="birthInput"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">Gender</label>
+                            <select class="form-select mt-1" t-ref="genderInput">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-success w-100 fw-bold shadow-sm" t-on-click="createrecord">
+                                <i class="fa fa-save me-2"/>Save Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <hr class="mb-5"/>
+
+            <t t-if="state.patient_data.length > 0">
+                <div class="row">
+                    <t t-foreach="state.patient_data" t-as="patient" t-key="patient.id">
+                        <div class="col-md-4 mb-3">
+                            <div t-attf-class="card p-3 shadow-sm patient-card #{patient.active ? 'active-border' : 'archived-border'}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title text-primary mb-0">
+                                        <i t-attf-class="fa #{patient.gender == 'male' ? 'fa-mars' : 'fa-venus'} me-2"/>
+                                        <t t-esc="patient.name || 'No Name'"/>
+                                    </h5>
+                                    <span t-attf-class="badge #{patient.active ? 'bg-success' : 'bg-secondary'}">
+                                        <t t-esc="patient.active ? 'Active' : 'Archived'"/>
+                                    </span>
+                                </div>
+                                <hr class="my-2"/>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <p class="mb-1 text-muted small">Age</p>
+                                        <p class="fw-bold mb-0"><t t-esc="patient.age || 0"/> Years</p>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p class="mb-1 text-muted small">Date of Birth</p>
+                                        <p class="mb-0 small"><t t-esc="patient.date_of_birth || 'N/A'"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t> 
+                </div>
+            </t>
+            
+            <t t-else="">
+                <div class="alert alert-info">
+                    Patient data is being loaded, or there are no patients currently listed...
+                </div>
+            </t>
+
+        </div>
+    </t>
+</templates>

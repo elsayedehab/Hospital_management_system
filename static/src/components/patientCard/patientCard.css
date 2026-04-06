@@ -1,0 +1,40 @@
+
+.o_patient_dashboard {
+    background-color: #f4f7f6 !important; 
+    padding: 2rem;
+}
+
+
+.patient-card {
+    border: none !important;
+    border-radius: 12px !important;
+    background: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    cursor: pointer;
+}
+
+
+.patient-card:hover {
+    transform: translateY(-8px); 
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+}
+
+.active-border {
+    border-left: 6px solid #007bff !important; 
+}
+
+.archived-border {
+    border-left: 6px solid #6c757d !important; 
+}
+
+.patient-card hr {
+    border-top: 1px solid #eee;
+    margin: 1rem 0;
+}
+
+.btn-primary {
+    border-radius: 8px !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 6px rgba(0,123,255,0.2);
+}
