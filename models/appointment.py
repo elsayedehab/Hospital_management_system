@@ -36,4 +36,28 @@ class HospitalAppointment(models.Model):
         res = super().create(vals)
         return res
 
-        
+
+    presciption_count=fields.Integer(string="Preciptions", compute="compute_presciption_count")
+
+    def compute_presciption_count(self):
+        for rec in self:
+            if not rec.id:
+                rec.presciption_count = 0
+                continue
+            
+            rec.presciption_count = self.env['patient.prescription'].search_count([
+                ('appointment_id', '=', rec.id)
+            ])
+
+
+
+    def action_view_presciptions(self):
+        return{
+            'name' :'Preciptions',
+            'res_model':'patient.prescription',
+            "view_mode":'tree,form',
+            'domain': [('appointment_id', '=', self.id)],
+            'context': {'default_appointment_id': self.id}, 
+            'target' : 'current',
+            'type' :'ir.actions.act_window'
+        }    

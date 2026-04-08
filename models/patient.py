@@ -7,6 +7,10 @@ class HospitalPatient(models.Model):
     _description = "Hospital Patient"
     _inherit = ['mail.thread', 'mail.activity.mixin'] 
 
+    partner_id = fields.Many2one('res.partner', string="Contact Info")
+    phone = fields.Char(string="Phone", related='partner_id.phone', readonly=True)
+    email = fields.Char(string="Email", related='partner_id.email', readonly=True)
+
     name = fields.Char(string="Patient Name", tracking=True)
     age = fields.Integer(string="Patient Age", compute="_compute_age", store=True, tracking=True)
     date_of_birth = fields.Date(string="Date Of Birth", tracking=True)
@@ -32,3 +36,23 @@ class HospitalPatient(models.Model):
                 rec.age = age
             else:
                 rec.age = 0
+
+    appointment_count = fields.Integer(compute='_compute_appointment_count', string='Appointment Count')
+
+    def _compute_appointment_count(self):
+        for rec in self:
+            rec.appointment_count = self.env['hospital.appointment'].search_count([
+                ('patient_id', '=', rec.id)
+            ])
+
+    def action_view_appointments(self):
+        return {
+            'name': 'Appointments',
+            'res_model': 'hospital.appointment',
+            'view_mode': 'tree,form',
+            'domain': [('patient_id', '=', self.id)],
+            'context': {'default_patient_id': self.id},
+            'target': 'current',
+            'type': 'ir.actions.act_window',
+        
+        }            

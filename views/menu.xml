@@ -3,7 +3,7 @@
         <menuitem
             id="hospital_menu_root"
             name="Hospital Management"
-            web_icon="hospital_management,custom_addons/hospital_mangementstatic/description/icon.png"
+            web_icon="hospital_management,static/description/icon.png"
             sequence="0" />
 
         <menuitem
@@ -51,4 +51,4 @@
         />
 
     </data>
-</odoo>
+</odoo> 
