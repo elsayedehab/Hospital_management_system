@@ -13,11 +13,54 @@
             </field>
         </record>
 
+        <record id="view_appointment_history_tree" model="ir.ui.view">
+            <field name="name">appointment.history.tree</field>
+            <field name="model">appointment.history</field>
+            <field name="arch" type="xml">
+                <tree string="Appointment History" create="0" edit="0" delete="0">
+                    <field name="changed_date" string="Date/Time" />
+                    <field name="user_id" string="Done By" widget="many2one_avatar_user" />
+                    <field name="old_state" string="From Status"
+                        decoration-info="old_state == 'draft'"
+                        decoration-success="old_state == 'done'"
+                        decoration-danger="old_state == 'cancel'" />
+                    <field name="new_state" string="To Status"
+                        decoration-info="new_state == 'draft'"
+                        decoration-success="new_state == 'done'"
+                        decoration-danger="new_state == 'cancel'" />
+                    <field name="reason" string="Notes / Reason" />
+                </tree>
+            </field>
+        </record>
+
+        <record id='cancel_passed_appointments' model='ir.cron'>
+            <field name="name">Cancel Passed Appointments</field>
+            <field name="model_id" ref="model_hospital_appointment"></field>
+            <field name="code">model.cancel_passed_appointmemnts()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="datetime.now().strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
         <record id="hospital_appointment_view_form_v2" model="ir.ui.view">
             <field name="name">hospital.appointment.form.v2</field>
             <field name="model">hospital.appointment</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_done" string="Mark as Done" type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft' or id == False" />
+
+                        <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state != 'draft' or id == False" />
+
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ['done', 'cancel']" />
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+                    </header>
 
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -28,7 +71,15 @@
                                 <field name="presciption_count" string="Prescriptions"
                                     widget="statinfo" />
                             </button>
+                            <button name="action_view_history" type="object" class="oe_stat_button"
+                                icon="fa-history">
+                                <div class="o_stat_info">
+                                    <span class="oe_stat_text">Status</span>
+                                    <span class="oe_stat_text">History</span>
+                                </div>
+                            </button>
                         </div>
+
                         <div class="oe_title">
                             <h1>
                                 <field name="appointment_serial" readonly="1" />
@@ -41,10 +92,11 @@
                                 <field name="gender" />
                             </group>
                             <group string="Date Information">
-                                <field name="appointment_time" />
+                                <field name="appointment_time" readonly="state !='draft'" />
                                 <field name="booking_time" />
                             </group>
                         </group>
+
 
                     </sheet>
                     <div class="oe_chatter">
