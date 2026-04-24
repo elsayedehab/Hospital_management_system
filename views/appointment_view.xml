@@ -8,8 +8,91 @@
                     <field name="appointment_serial" readonly="1" />
                     <field name="patient_id" />
                     <field name="appointment_time" />
-                    <field name="booking_time" />
+                    <field name="payment_state" widget="badge"
+                        decoration-success="payment_state == 'paid'"
+                        decoration-danger="payment_state == 'not_paid'" />
+                    <field name="state" widget="badge"
+                        decoration-info="state == 'draft'"
+                        decoration-success="state == 'done'" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="hospital_appointment_view_form_v2" model="ir.ui.view">
+            <field name="name">hospital.appointment.form.v2</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_create_invoice" string="Create Invoice" type="object"
+                            class="oe_highlight"
+                            invisible="invoice_id != False or state != 'draft'" />
+
+                        <button name="action_done" string="Mark as Done" type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft' or id == False" />
+
+                        <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state != 'draft' or id == False" />
+
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ['done', 'cancel']" />
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_prescriptions" type="object"
+                                class="oe_stat_button" icon="fa-flask">
+                                <field name="prescription_count" string="Prescriptions"
+                                    widget="statinfo" />
+                            </button>
+                            <button name="action_view_history" type="object" class="oe_stat_button"
+                                icon="fa-history">
+                                <div class="o_stat_info">
+                                    <span class="oe_stat_text">Status</span>
+                                    <span class="oe_stat_text">History</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="appointment_serial" readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Patient Information">
+                                <field name="patient_id" />
+                                <field name="age" />
+                                <field name="gender" />
+                            </group>
+                            <group string="Date Information">
+                                <field name="appointment_time" readonly="state !='draft'" />
+                                <field name="booking_time" />
+                            </group>
+                        </group>
+
+                        <group string="Payment &amp; Invoicing">
+                            <group>
+                                <field name="payment_state" widget="radio"
+                                    options="{'horizontal': True}" />
+                            </group>
+                            <group>
+                                <field name="invoice_id" readonly="1"
+                                    invisible="invoice_id == False" />
+                            </group>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
+                </form>
             </field>
         </record>
 
@@ -36,76 +119,11 @@
         <record id='cancel_passed_appointments' model='ir.cron'>
             <field name="name">Cancel Passed Appointments</field>
             <field name="model_id" ref="model_hospital_appointment"></field>
-            <field name="code">model.cancel_passed_appointmemnts()</field>
+            <field name="code">model.cancel_passed_appointments()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="nextcall" eval="datetime.now().strftime('%Y-%m-%d %H:%M:%S')" />
-        </record>
-
-        <record id="hospital_appointment_view_form_v2" model="ir.ui.view">
-            <field name="name">hospital.appointment.form.v2</field>
-            <field name="model">hospital.appointment</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <button name="action_done" string="Mark as Done" type="object"
-                            class="oe_highlight"
-                            invisible="state != 'draft' or id == False" />
-
-                        <button name="action_cancel" string="Cancel" type="object"
-                            invisible="state != 'draft' or id == False" />
-
-                        <button name="action_reset_to_draft" string="Reset to Draft" type="object"
-                            invisible="state not in ['done', 'cancel']" />
-
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
-                    </header>
-
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_presciptions"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-flask">
-                                <field name="presciption_count" string="Prescriptions"
-                                    widget="statinfo" />
-                            </button>
-                            <button name="action_view_history" type="object" class="oe_stat_button"
-                                icon="fa-history">
-                                <div class="o_stat_info">
-                                    <span class="oe_stat_text">Status</span>
-                                    <span class="oe_stat_text">History</span>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div class="oe_title">
-                            <h1>
-                                <field name="appointment_serial" readonly="1" />
-                            </h1>
-                        </div>
-                        <group>
-                            <group string="Patient Information">
-                                <field name="patient_id" />
-                                <field name="age" />
-                                <field name="gender" />
-                            </group>
-                            <group string="Date Information">
-                                <field name="appointment_time" readonly="state !='draft'" />
-                                <field name="booking_time" />
-                            </group>
-                        </group>
-
-
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
-                    </div>
-                </form>
-            </field>
         </record>
 
         <record id="hospital_appointment_search" model="ir.ui.view">
@@ -124,6 +142,5 @@
             <field name="res_model">hospital.appointment</field>
             <field name="view_mode">tree,form</field>
         </record>
-
     </data>
 </odoo>
